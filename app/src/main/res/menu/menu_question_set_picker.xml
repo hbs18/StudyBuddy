@@ -1,0 +1,19 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="101"
+        android:title="@string/action_settings"
+        />
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="99"
+        android:title="About"
+        android:onClick="openAbout"/>
+
+    <item
+        android:id="@+id/action_help"
+        android:orderInCategory="100"
+        android:title="Help"
+        android:onClick="openHelp"/>
+</menu>

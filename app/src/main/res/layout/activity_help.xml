@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".HelpActivity">
+
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_margin="8dp">
+        <TextView
+            android:id="@+id/helpTitle1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="What is StudyBuddy?"
+            android:textAppearance="@style/TextAppearance.AppCompat.Large"
+            />
+
+        <TextView
+            android:id="@+id/helpContents1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/helpTitle1"
+            android:text="StudyBuddy is a revision/studying app which gives you random questions from a given question set. It loads text files from /storage/emulated/0/cf.hbs18.studybuddy and parses them. The first line in a question text file is the set title. Every line after that is a question."
+             />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/helpTitle2"
+                android:text="How to create question sets"
+                android:layout_below="@id/helpContents1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/helpContents2"
+                android:text="Create plain text files and place them into /storage/emulated/0/cf.hbs18.studybuddy. The first line is the question set title, and gets shown in the top bar. Subsequent lines are questions. Place one question per line."
+                android:layout_below="@id/helpTitle2">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/helpTitle3"
+                android:text="Planned features"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:layout_below="@id/helpContents2">
+            </TextView>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/helpContents3"
+                android:text="A view showing question set details, like subtitles and tags, before the examination screen. A settings screen. Better app design, sequential (non-random) modes with optional shuffling. In the more distant future, native question set creating functionality."
+                android:layout_below="@id/helpTitle3"></TextView>
+        </RelativeLayout>
+    </ScrollView>
+</androidx.constraintlayout.widget.ConstraintLayout>
