@@ -10,11 +10,13 @@ import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.view.isVisible
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import org.w3c.dom.Text
 import java.io.File
 import kotlin.properties.Delegates
 import kotlin.random.Random
 
-var i_seq = 0;
+var i_seq = -1;
 //lateinit var pitanja:String;
 lateinit var selected_file_seq:String;
 lateinit var pitanja_noTitle_seq:List<String>;
@@ -22,7 +24,7 @@ var num_pitanja_seq by Delegates.notNull<Int>();
 
 class SequentialInterrogation : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
-        i_seq=0;
+        i_seq=-1;
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_sequential_interrogation)
         val message = intent.getStringExtra(EXTRA_MESSAGE2)
@@ -44,15 +46,8 @@ class SequentialInterrogation : AppCompatActivity() {
 
     }
 
-    fun rand(start: Int, end: Int): Int {
-        require(start <= end) { "Illegal Argument" }
-        val rand = Random(System.nanoTime())
-        return (start..end).random(rand)
-    }
-
-
-
     fun nextQuestion(view: View){
+
         val fadeIn = AlphaAnimation(0f, 1f)
         fadeIn.interpolator = DecelerateInterpolator()
         fadeIn.duration = 512
@@ -67,25 +62,21 @@ class SequentialInterrogation : AppCompatActivity() {
 
         findViewById<TextView>(R.id.textView_progress).isVisible=true
         findViewById<TextView>(R.id.progressBarQuestions).isVisible=true
-        findViewById<TextView>(R.id.textView_progress).text = "Question "+(i_seq+1).toString()+" of "+ (num_pitanja_seq-1).toString()
+        findViewById<TextView>(R.id.textView_progress).text = "Question "+(i_seq+2).toString()+" of "+ (num_pitanja_seq).toString()
 
         val questionsProgress = findViewById<ProgressBar>(R.id.progressBarQuestions)
-        val questionsPercentage = (i_seq+1)/(num_pitanja_seq-1).toFloat()
+        val questionsPercentage = (i_seq+2)/(num_pitanja_seq).toFloat()
         questionsProgress.setProgress((questionsPercentage*100).toInt(), true)
-
-        findViewById<TextView>(R.id.currentQuestion_seq).text = pitanja_noTitle_seq[i_seq].toString()
         i_seq=i_seq+1
-        if (i_seq> num_pitanja_seq-1) {
-            i_seq=0
+        if (i_seq+1 > num_pitanja_seq) {
+            i_seq=-1
             findViewById<TextView>(R.id.currentQuestion_seq).text = "You have reached the end of this question set."
             findViewById<TextView>(R.id.textView_progress).isVisible=false
             findViewById<TextView>(R.id.progressBarQuestions).isVisible=false
         }
-    }
-
-    fun shuffleQuestionSet(){
-        pitanja_array_shuffled = pitanja_array_shuffled.shuffled()
-        return
+        else {
+            findViewById<TextView>(R.id.currentQuestion_seq).text = pitanja_noTitle_seq[i_seq].toString()
+        }
     }
 
     fun stripTitle(arr: List<String>, index: Int): List<String> {
