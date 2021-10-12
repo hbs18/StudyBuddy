@@ -21,6 +21,10 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <style name="SheetIcons">
+        <item name="android:tint">@color/brown_700</item>
+    </style>
+
     <style name="Theme.StudyBuddy.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
     <style name="Theme.StudyBuddy.PopupOverlay" parent="ThemeOverlay.AppCompat.DayNight.ActionBar">
 

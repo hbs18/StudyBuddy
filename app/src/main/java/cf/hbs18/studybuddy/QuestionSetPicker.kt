@@ -4,10 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.CollapsingToolbarLayout
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -16,6 +19,8 @@ import java.io.IOException
 
 const val EXTRA_MESSAGE = "cf.hbs18.studybuddy.MESSAGE"
 const val EXTRA_MESSAGE3 = "cf.hbs18.studybuddy.MESSAGE3"
+
+lateinit var currentPath : String
 
 class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
     private var exampleList = generateFileList()
@@ -69,15 +74,63 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
     }
 
     override fun onItemClick(position: Int) {
+        //get list of files and build path of selected file
         val f = File("/storage/emulated/0/cf.hbs18.studybuddy")
         val files: Array<File> = f.listFiles()
-        val length=(files.size-1)
-        val list = ArrayList<MenuItem>()
-        val toast_text="/storage/emulated/0/cf.hbs18.studybuddy/"+files[position].name
-        val intent = Intent(this, QuestionSetDetails::class.java).apply {
-            putExtra(EXTRA_MESSAGE, toast_text)
+        val toast_text="/storage/emulated/0/cf.hbs18.studybuddy/"+files[position].name  //this is the picked file's path
+        currentPath = toast_text
+
+        //read selected file so bottom info sheet text views can be set
+        if (toast_text != null) {
+            selected_file = toast_text
         }
-        startActivity(intent)
+        val file2 = File(selected_file)
+        val pitanja = file2.bufferedReader().use { it.readText() }
+        val pitanja_array = pitanja.lines()
+
+
+
+        //inflate and show the bottom sheet
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+        dialog.setContentView(view)
+        dialog.show()
+
+        //now set text views
+        //you gotta use view. prefix here! source: https://stackoverflow.com/questions/31959101/set-text-in-textview-in-custom-dialog#comment51827229_31959501
+        view.findViewById<TextView>(R.id.bottomSheet_setLocation).text = toast_text     //set set location text
+        view.findViewById<TextView>(R.id.bottomSheet_questionSetTitle).text = pitanja_array[0]      //set title text
+        view.findViewById<TextView>(R.id.bottomSheet_numOfQuestions).text = (pitanja_array.size - 2).toString() + " questions"      //set no. of questions
+
+        //set on click listeners for other menu options
+        var buttonRandom = view.findViewById<LinearLayout>(R.id.bottomSheetItem5)
+        var buttonSequential = view.findViewById<LinearLayout>(R.id.bottomSheetItem4)
+        var buttonEdit = view.findViewById<LinearLayout>(R.id.bottomSheetItem6)
+
+        buttonEdit.setOnClickListener { view ->
+            val intent = Intent(this, EditQuestionSet::class.java).apply {
+                putExtra(EXTRA_MESSAGE3, currentPath)
+            }
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
+        buttonRandom.setOnClickListener { view ->
+            val intent = Intent(this, InterrogationView::class.java).apply {
+                putExtra(EXTRA_MESSAGE2, currentPath)
+            }
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
+        buttonSequential.setOnClickListener { view ->
+            val intent = Intent(this, SequentialInterrogation::class.java).apply {
+                putExtra(EXTRA_MESSAGE2, currentPath)
+            }
+            startActivity(intent)
+            dialog.dismiss()
+        }
+
         adapter.notifyItemChanged(position)
     }
 
@@ -118,4 +171,38 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         }
         startActivity(intent)
     }
+
+    /* fun randomQuestions(view: View){
+        val f = File("/storage/emulated/0/cf.hbs18.studybuddy")
+        val files: Array<File> = f.listFiles()
+        val length=(files.size-1)
+        val list = ArrayList<MenuItem>()
+        val toast_text = currentPath
+        val intent = Intent(this, InterrogationView::class.java).apply {
+            putExtra(EXTRA_MESSAGE2, toast_text)
+        }
+        startActivity(intent)
+        return
+    }
+
+    fun sequentialQuestions(view: View){
+        val f = File("/storage/emulated/0/cf.hbs18.studybuddy")
+        val files: Array<File> = f.listFiles()
+        val length=(files.size-1)
+        val list = ArrayList<MenuItem>()
+        val toast_text = currentPath
+        val intent = Intent(this, SequentialInterrogation::class.java).apply {
+            putExtra(EXTRA_MESSAGE2, toast_text)
+        }
+        startActivity(intent)
+        return
+    }
+
+    fun editQuestionSet(view: View){
+        val intent = Intent(this, EditQuestionSet::class.java).apply {
+            putExtra(EXTRA_MESSAGE3, currentPath)
+        }
+        startActivity(intent)
+        return
+    } */
 }

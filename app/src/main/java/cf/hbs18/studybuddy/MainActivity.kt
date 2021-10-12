@@ -4,6 +4,7 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -48,7 +49,11 @@ class MainActivity : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         val intent = Intent(this, InterrogationView::class.java).apply {
             putExtra(EXTRA_MESSAGE, toast_text)
         }
-        startActivity(intent)
+        //startActivity(intent)
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+        dialog.setContentView(view)
+        dialog.show()
         //adapter.notifyItemChanged(position)
     }
 }
