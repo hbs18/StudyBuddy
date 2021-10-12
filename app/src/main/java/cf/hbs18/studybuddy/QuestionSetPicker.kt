@@ -1,5 +1,6 @@
 package cf.hbs18.studybuddy
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -106,6 +107,7 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         var buttonRandom = view.findViewById<LinearLayout>(R.id.bottomSheetItem5)
         var buttonSequential = view.findViewById<LinearLayout>(R.id.bottomSheetItem4)
         var buttonEdit = view.findViewById<LinearLayout>(R.id.bottomSheetItem6)
+        var buttonDelete = view.findViewById<LinearLayout>(R.id.bottomSheetItem7)
 
         buttonEdit.setOnClickListener { view ->
             val intent = Intent(this, EditQuestionSet::class.java).apply {
@@ -131,10 +133,31 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
             dialog.dismiss()
         }
 
+        buttonDelete.setOnClickListener { view ->
+            showDefaultDialog(position)
+            dialog.dismiss()
+        }
+
         adapter.notifyItemChanged(position)
     }
 
-    fun openAbout(item: android.view.MenuItem) {
+    private fun showDefaultDialog(position: Int) {
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.apply {
+            setIcon(R.drawable.ic_baseline_delete_24)
+            setTitle("Delete question set")
+            setMessage("Are you sure you want to delete this question set file?")
+            setPositiveButton("Yes") { _, _ ->
+                val file3 = File(currentPath)
+                file3.delete()
+                adapter.notifyItemRemoved(position);
+            }
+            setNegativeButton("No") { _, _ ->
+            }
+        }.create().show()
+    }
+
+        fun openAbout(item: android.view.MenuItem) {
         val intent = Intent(this, AboutScreen::class.java)
         startActivity(intent)
     }

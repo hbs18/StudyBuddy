@@ -8,11 +8,14 @@
 
     <EditText
         android:id="@+id/editTextTextMultiLine"
+        style="@android:style/Widget.Material.EditText"
         android:layout_width="390dp"
         android:layout_height="572dp"
         android:ems="10"
         android:gravity="start|top"
         android:inputType="textMultiLine"
+        android:lineSpacingExtra="8sp"
+        android:typeface="monospace"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.476"

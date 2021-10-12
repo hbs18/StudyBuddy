@@ -32,5 +32,4 @@
     <style name="ModalBottomSheetDialog" parent="Widget.MaterialComponents.BottomSheet.Modal">
         <item name="backgroundTint">#FF212121</item>
     </style>
-
 </resources>
