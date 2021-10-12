@@ -100,7 +100,7 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         //you gotta use view. prefix here! source: https://stackoverflow.com/questions/31959101/set-text-in-textview-in-custom-dialog#comment51827229_31959501
         view.findViewById<TextView>(R.id.bottomSheet_setLocation).text = toast_text     //set set location text
         view.findViewById<TextView>(R.id.bottomSheet_questionSetTitle).text = pitanja_array[0]      //set title text
-        view.findViewById<TextView>(R.id.bottomSheet_numOfQuestions).text = (pitanja_array.size - 2).toString() + " questions"      //set no. of questions
+        view.findViewById<TextView>(R.id.bottomSheet_numOfQuestions).text = (pitanja_array.size - 1).toString() + " questions"      //set no. of questions
 
         //set on click listeners for other menu options
         var buttonRandom = view.findViewById<LinearLayout>(R.id.bottomSheetItem5)
