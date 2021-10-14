@@ -6,6 +6,7 @@ import android.view.View
 import android.widget.EditText
 import android.widget.TextView
 import com.google.android.material.snackbar.Snackbar
+import kotlinx.android.synthetic.main.activity_edit_question_set.*
 import org.w3c.dom.Text
 import java.io.File
 import java.io.FileOutputStream
@@ -40,15 +41,17 @@ class EditQuestionSet : AppCompatActivity() {
     }
 
     fun saveFile(view: View){
+        val filenameText = editTextFileName.editText?.text.toString()
+
         if(intent.getStringExtra(EXTRA_MESSAGE3) == "nothing") {
-            var filename = findViewById<EditText>(R.id.editTextFileName).text
-            if (findViewById<EditText>(R.id.editTextFileName).text.toString() == "" || findViewById<EditText>(R.id.editTextFileName).text.toString() == null){
+            //var filename = findViewById<EditText>(R.id.editTextFileName).text
+            if (filenameText == "" || filenameText == null){
                 Snackbar.make(view, "You need to set a file name!", Snackbar.LENGTH_LONG)
                     .setAction("You need to set a file name!", null)
                     .show()
             }
             else {
-                var newPath = "/storage/emulated/0/cf.hbs18.studybuddy/" + filename + ".txt"
+                var newPath = "/storage/emulated/0/cf.hbs18.studybuddy/" + filenameText + ".txt"
 
                 val file = File(newPath)
                 if(file.exists()){
