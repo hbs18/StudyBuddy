@@ -9,6 +9,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -108,6 +109,8 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         var buttonSequential = view.findViewById<LinearLayout>(R.id.bottomSheetItem4)
         var buttonEdit = view.findViewById<LinearLayout>(R.id.bottomSheetItem6)
         var buttonDelete = view.findViewById<LinearLayout>(R.id.bottomSheetItem7)
+        var emptyNotificationText = view.findViewById<LinearLayout>(R.id.bottomSheetEmptySetNotification)
+        var questionsCount = view.findViewById<LinearLayout>(R.id.bottomSheetItem2)
 
         buttonEdit.setOnClickListener { view ->
             val intent = Intent(this, EditQuestionSet::class.java).apply {
@@ -136,6 +139,20 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         buttonDelete.setOnClickListener { view ->
             showDefaultDialog(position)
             dialog.dismiss()
+        }
+
+        //disable seq/rand question buttons if there are no questions in set
+        if (pitanja_array.size - 1 <= 0){
+            buttonSequential.isVisible = false
+            buttonRandom.isVisible = false
+            questionsCount.isVisible = false
+            emptyNotificationText.isVisible = true
+
+        } else {
+            buttonSequential.isVisible = true
+            buttonRandom.isVisible = true
+            questionsCount.isVisible = true
+            emptyNotificationText.isVisible = false
         }
 
         adapter.notifyItemChanged(position)
