@@ -24,7 +24,7 @@ class EditQuestionSet : AppCompatActivity() {
 
         }
         else{
-            findViewById<EditText>(R.id.editTextFileName).visibility = View.GONE
+            editTextFileName.visibility = View.GONE
             path = intent.getStringExtra(EXTRA_MESSAGE3).toString()
 
             findViewById<TextView>(R.id.pathOfFileBeingEdited).text = "Path: "+ path
