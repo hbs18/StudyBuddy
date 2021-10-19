@@ -1,23 +1,26 @@
 package cf.hbs18.studybuddy
 
+import android.R.attr.data
 import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
+import android.os.Build
 import android.os.Bundle
+import android.os.Environment
+import android.provider.Settings
 import android.view.Menu
 import android.view.View
-import android.widget.LinearLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.google.android.material.bottomsheet.BottomSheetDialog
-import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+
 
 const val EXTRA_MESSAGE = "cf.hbs18.studybuddy.MESSAGE"
 const val EXTRA_MESSAGE3 = "cf.hbs18.studybuddy.MESSAGE3"
@@ -28,6 +31,7 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
     private var exampleList = generateFileList()
     private var adapter = MenuAdapter(exampleList, this)
 
+    @RequiresApi(Build.VERSION_CODES.R)                 //ispitivanje manage external storage permissiona treba ovaj annotation
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_question_set_picker)
@@ -42,15 +46,31 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         fab.setOnClickListener { view ->
             createNewQuestionSet()
         }
+
+
     }
 
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onResume() {
         super.onResume()
+        if (Environment.isExternalStorageManager() == false) {                      //ako nema manage all files permission
+            showPermissionDialog()
+            findViewById<TextView>(R.id.mainScreenWarningText).text = "StudyBuddy doesn't have permissions needed to show your question sets."
+        } else {
+            findViewById<RelativeLayout>(R.id.mainScreenWarningLayout).isVisible = false
+        }
+
+        if (Environment.isExternalStorageManager() == true && exampleList.isEmpty() == true) {
+            findViewById<TextView>(R.id.mainScreenWarningLayout).isVisible = true
+            findViewById<TextView>(R.id.mainScreenWarningText).text = "You don't have any question sets."
+            findViewById<Button>(R.id.grantPermissionsButton).isVisible = false
+        }
+
+
         exampleList = generateFileList()
         adapter = MenuAdapter(exampleList, this)
         recyclerView.adapter = adapter
         recyclerView.invalidate()
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -66,7 +86,10 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         for (i in 0..length) {
             //open file, get first line, set it as menu item
             val file=File("/storage/emulated/0/cf.hbs18.studybuddy/" + files[i].name)
-            val entry_title = file.bufferedReader().use { it.readLine() }
+            var entry_title = file.bufferedReader().use { it.readLine() }
+            if (entry_title == null) {
+                entry_title = "Unnamed question set"
+            }
 
             //val item = MenuItem(files[i].name)
             val item = MenuItem(entry_title)
@@ -79,7 +102,13 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
         //get list of files and build path of selected file
         val f = File("/storage/emulated/0/cf.hbs18.studybuddy")
         val files: Array<File> = f.listFiles()
-        val toast_text="/storage/emulated/0/cf.hbs18.studybuddy/"+files[position].name  //this is the picked file's path
+        val toast_text: String
+        try {
+            toast_text="/storage/emulated/0/cf.hbs18.studybuddy/"+files[position].name  //this is the picked file's path
+        } catch (e: ArrayIndexOutOfBoundsException){
+            throw Exception("Sjebalo se nes gadno")
+        }
+
         currentPath = toast_text
 
         //read selected file so bottom info sheet text views can be set
@@ -173,6 +202,42 @@ class QuestionSetPicker : AppCompatActivity(), MenuAdapter.OnItemClickListener {
             }
         }.create().show()
     }
+
+    fun showPermissionDialog(){
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.apply { setIcon(R.drawable.ic_baseline_warning_24);
+            setTitle("Permissions");
+            setMessage("StudyBuddy needs to be granted permission to read and write files from your device.");
+            setPositiveButton("Grant") { _, _ ->
+                permissionsActivity()
+            }
+        }.create().show()
+        return
+    }
+
+    fun permissionsActivity(){
+        val uri = Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+
+        startActivity(
+                Intent(
+                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        uri
+                )
+        )
+        return
+    }
+
+    fun permissionsActivityButton(view: View){
+        val uri = Uri.parse("package:${BuildConfig.APPLICATION_ID}")
+
+        startActivity(
+                Intent(
+                        Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION,
+                        uri
+                )
+        )
+        return
+    }       //quick and dirty, clean up in the future!!!
 
         fun openAbout(item: android.view.MenuItem) {
         val intent = Intent(this, AboutScreen::class.java)
