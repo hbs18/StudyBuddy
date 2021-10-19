@@ -1,3 +1,5 @@
+//TODO: Fix deleting item in recyclerview
+
 package cf.hbs18.studybuddy
 
 import android.R.attr.data
